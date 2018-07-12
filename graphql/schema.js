@@ -10,7 +10,7 @@ type Task {
 }
 
 type Query {
-  allTasks: [Task]
+  allTasks(description_like: String, withComments: Boolean, withAttachments: Boolean): [Task]
 }
 
 `;
