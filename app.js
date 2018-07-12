@@ -16,9 +16,7 @@ app.use(
     extended: true
   })
 );
-const root = {
-  /*db: dbPromise*/
-};
+const root = {};
 const executableSchema = makeExecutableSchema({ typeDefs: schema, resolvers });
 
 app.use(
