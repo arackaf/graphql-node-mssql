@@ -28,7 +28,8 @@ app.use(
   })
 );
 
-app.use("/src/", express.static(__dirname + "/static/"));
+app.get("/", (req, resp) => resp.sendFile(path.join(__dirname + "/index.htm")));
+app.use("/dist/", express.static(__dirname + "/dist/"));
 app.use("/node_modules/", express.static(__dirname + "/node_modules/"));
 
 app.listen(process.env.PORT || 3000);
