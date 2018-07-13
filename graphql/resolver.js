@@ -35,6 +35,9 @@ module.exports = {
       let pool = await conn;
       let query = SELECT;
 
+      if (args.id) {
+        query += " AND id = " + args.id + " ";
+      }
       if (args.description_like) {
         query += " AND Description LIKE '%" + args.description_like + "%' ";
       }

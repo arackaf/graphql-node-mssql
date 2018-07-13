@@ -25,7 +25,7 @@ type Task {
 }
 
 type Query {
-  allTasks(description_like: String, withComments: Boolean, withAttachments: Boolean): [Task]
+  allTasks(id: Int, description_like: String, withComments: Boolean, withAttachments: Boolean): [Task]
 }
 
 `;
