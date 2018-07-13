@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component, Fragment } from "react";
 import { Client, GraphQL, buildQuery, setDefaultClient } from "micro-graphql-react";
 
 const client = new Client({
@@ -10,11 +10,35 @@ setDefaultClient(client);
 
 /* #region GraphQL_queries */
 
+const TASK_WIDGET = ` {
+  allTasks {
+    id
+    description
+  }
+}
+`;
+
+const TASK_GRID = ` {
+  allTasks {
+    id
+    description
+    dueDate
+    creationDate
+    completedDate
+    completedByContactId
+  }
+}
+`;
+
 const TASK_DETAILS = ` {
   allTasks(id: 1033374) {
     id
     description
     dueDate
+    creationDate
+    isCompleted
+    completedDate
+    completedByContactId
     comments {
       id
       description
@@ -43,8 +67,63 @@ export default class Home extends Component {
         <br />
         <br />
 
-        <GraphQL query={{ tasks: buildQuery(TASK_DETAILS) }}>
+        <h2>Tasks Grid</h2>
+        <GraphQL query={{ tasks: buildQuery(TASK_GRID) }}>
           {({ tasks: { loading, loaded, data } }) => {
+            let tasks = (data && data.allTasks) || [];
+            debugger;
+
+            return (
+              <div>
+                {loading ? <span>Loading ...</span> : null}
+                <table>
+                  <thead>
+                    <tr>
+                      <td>Desc</td>
+                      <td>Due date</td>
+                      <td>Created on</td>
+                      <td>Completed on</td>
+                      <td>Completed by</td>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {tasks.slice(8).map(t => (
+                      <tr key={t.id}>
+                        <td>{t.description}</td>
+                        <td>{t.dueDate}</td>
+                        <td>{t.creationDate}</td>
+                        <td>{t.completedDate}</td>
+                        <td>{t.completedByContactId}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            );
+          }}
+        </GraphQL>
+
+        <h2>Tasks Widget</h2>
+        <GraphQL query={{ tasks: buildQuery(TASK_WIDGET) }}>
+          {({ tasks: { loading, loaded, data } }) => {
+            let tasks = (data && data.allTasks) || [];
+
+            return (
+              <div>
+                {loading ? <span>Loading ...</span> : null}
+                {tasks.slice(8).map(t => (
+                  <div key={t.id}>
+                    <span>Name {t.description}</span>
+                  </div>
+                ))}
+              </div>
+            );
+          }}
+        </GraphQL>
+
+        <h2>Task Details</h2>
+        <GraphQL query={{ taskDetails: buildQuery(TASK_DETAILS) }}>
+          {({ taskDetails: { loading, loaded, data } }) => {
             let task = data && data.allTasks ? data.allTasks[0] : null;
             return (
               <div>
@@ -52,6 +131,13 @@ export default class Home extends Component {
                 {task ? (
                   <div>
                     <div>Description: {task.description}</div>
+                    <div>Is Completed: {task.isCompleted}</div>
+                    {task.isCompleted ? (
+                      <Fragment>
+                        <div>Completed date: {task.completedDate}</div>
+                        <div>Completed by: {task.completedByContactId}</div>
+                      </Fragment>
+                    ) : null}
                     <div>Due Date: {task.dueDate}</div>
                     <br />
                     Attachments:
