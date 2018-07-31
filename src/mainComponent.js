@@ -71,7 +71,6 @@ export default class Home extends Component {
         <GraphQL query={{ tasks: buildQuery(TASK_GRID) }}>
           {({ tasks: { loading, loaded, data } }) => {
             let tasks = (data && data.allTasks) || [];
-            debugger;
 
             return (
               <div>
